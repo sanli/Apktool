@@ -68,6 +68,12 @@ public class ARSCDecoder {
     private ResPackage[] readTableHeader() throws IOException, AndrolibException {
         nextChunkCheckType(Header.TYPE_TABLE);
         int packageCount = mIn.readInt();
+        // if the head contains extra info, will skip the rest byte
+        if( mHeader.headerSize > 12){
+            byte[] byteToSkip = new byte[mHeader.headerSize - 12];
+            mIn.readFully(byteToSkip);
+            LOGGER.info("Skip extra head size: " + byteToSkip.length);
+        }
 
         mTableStrings = StringBlock.read(mIn);
         ResPackage[] packages = new ResPackage[packageCount];
